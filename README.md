@@ -37,6 +37,12 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Deployed on vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Live link
+
+https://4-digit-auth.vercel.app/login
+
+## Github Repo
+
+https://github.com/Aswanthachu/4DigitAuth.git
