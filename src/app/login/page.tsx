@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
@@ -16,7 +16,6 @@ const LoginPage = () => {
   const [code, setCode] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loadingState, setLoadingState] = useState<boolean>(false);
-
 
   if (session?.user) {
     router.push("/");
@@ -57,7 +56,6 @@ const LoginPage = () => {
       setLoadingState(false);
     }
   };
-
 
   if (loadingState) {
     return (
