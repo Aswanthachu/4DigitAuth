@@ -17,14 +17,18 @@ interface UserData {
 }
 
 const HomePage = () => {
-  const { user, session, loading, } = useAuth();
+  const { user, session, loading } = useAuth();
   const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [error, setError] = useState<string>("");
 
   const { toast } = useToast();
 
-  if(!session?.user)router.push("/login");
+  useEffect(() => {
+    if (!loading && !session?.user) {
+      router.push("/login");
+    }
+  }, [loading, session, router]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -51,20 +55,20 @@ const HomePage = () => {
       }
     };
 
-    if (!loading && !session) {
-      router.push("/login");
-    } else if (session && user) {
+    if (session && user) {
       fetchUserData();
     }
-  }, [loading, session, user, router]);
+  }, [session, user]);
 
-  if (error) {
-    toast({
-      variant: "destructive",
-      title: "Error",
-      description: error,
-    });
-  }
+  useEffect(() => {
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error,
+      });
+    }
+  }, [error, toast]);
 
   if (loading) {
     return (

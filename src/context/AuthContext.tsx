@@ -79,8 +79,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .eq("security_code", parseInt(code))
       .maybeSingle();
 
-    if (error) {
-      throw new Error("Invalid security code.");
+    console.log(data,error);
+    
+
+    if (!error && !data) {
+      toast({
+        variant: "destructive",
+        title: "Invalid security code.",
+        description: "There is no user with this security code.",
+      });
     }
 
     const cusSession: CustomSession = {

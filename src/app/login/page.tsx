@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
@@ -37,8 +37,7 @@ const LoginPage = () => {
     setCode("");
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setError("");
     setLoadingState(true);
 
@@ -58,6 +57,7 @@ const LoginPage = () => {
       setLoadingState(false);
     }
   };
+
 
   if (loadingState) {
     return (
