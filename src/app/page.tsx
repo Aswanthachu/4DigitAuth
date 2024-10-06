@@ -17,14 +17,40 @@ interface UserData {
 }
 
 const HomePage = () => {
-  const { user, session, loading, logout } = useAuth();
+  const { user, session, loading, } = useAuth();
   const router = useRouter();
   const [userData, setUserData] = useState<UserData | null>(null);
   const [error, setError] = useState<string>("");
 
   const { toast } = useToast();
 
+  if(!session?.user)router.push("/login");
+
   useEffect(() => {
+    const fetchUserData = async () => {
+      if (!user) {
+        setError("User not found.");
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+
+        if (error) {
+          setError(error.message);
+        } else {
+          setUserData(data);
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) setError(err.message);
+        else setError("An unexpected error occurred while fetching user data.");
+      }
+    };
+
     if (!loading && !session) {
       router.push("/login");
     } else if (session && user) {
@@ -32,35 +58,11 @@ const HomePage = () => {
     }
   }, [loading, session, user, router]);
 
-  const fetchUserData = async () => {
-    if (!user) {
-      setError("User not found.");
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      if (error) {
-        setError(error.message);
-      } else {
-        setUserData(data);
-      }
-    } catch (err) {
-      setError("An unexpected error occurred while fetching user data.");
-    }
-  };
-
   if (error) {
     toast({
       variant: "destructive",
-      title: "Security Code Already Taken.",
-      description:
-        "This security code is already in use. Please choose a different one.",
+      title: "Error",
+      description: error,
     });
   }
 

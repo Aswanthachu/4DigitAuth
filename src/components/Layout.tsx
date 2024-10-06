@@ -16,7 +16,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     try {
       await logout();
       router.push("/login");
-    } catch (error: any) {
+    } catch (error: unknown) {
+      if(error instanceof Error)
       console.error("Logout Error:", error.message);
     }
   };

@@ -17,7 +17,8 @@ const LoginPage = () => {
   const [error, setError] = useState<string>("");
   const [loadingState, setLoadingState] = useState<boolean>(false);
 
-  if (session) {
+
+  if (session?.user) {
     router.push("/");
     return null;
   }
@@ -50,8 +51,9 @@ const LoginPage = () => {
     try {
       await login(code);
       router.push("/");
-    } catch (err: any) {
-      setError(err.message || "An unexpected error occurred.");
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message);
+      else setError("An unexpected error occurred.");
     } finally {
       setLoadingState(false);
     }
