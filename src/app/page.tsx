@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/lib/supabaseClient";
+import Image from "next/image";
+import Spinner from "@/assets/svgs/Spinner.svg";
+import { useToast } from "@/hooks/use-toast";
 
 interface UserData {
   id: string;
@@ -19,7 +22,7 @@ const HomePage = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [error, setError] = useState<string>("");
 
-  console.log(session);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!loading && !session) {
@@ -52,35 +55,37 @@ const HomePage = () => {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-      router.push("/login");
-    } catch (err: any) {
-      setError(err.message || "Error signing out.");
-    }
-  };
+  if (error) {
+    toast({
+      variant: "destructive",
+      title: "Security Code Already Taken.",
+      description:
+        "This security code is already in use. Please choose a different one.",
+    });
+  }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-64px)] bg-gray-900">
-        <p className="text-xl">Loading...</p>
+        <Image src={Spinner} alt="Loading" />
       </div>
     );
   }
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-64px)] bg-gray-900 px-4">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="p-6 bg-white rounded shadow-md w-full max-w-md"
-      >
-        <h2 className="mb-4 text-2xl font-bold text-center text-black">
-          Welcome, {userData?.username}!
-        </h2>
-      </motion.div>
+      {userData?.username && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          className="p-6 bg-white rounded shadow-md w-full max-w-md"
+        >
+          <h2 className="mb-4 text-2xl font-bold text-center text-black">
+            Welcome, {userData?.username}!
+          </h2>
+        </motion.div>
+      )}
     </div>
   );
 };
