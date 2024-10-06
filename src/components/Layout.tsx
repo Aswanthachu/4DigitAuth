@@ -4,6 +4,8 @@ import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/Button";
+import { Toaster } from "./ui/toaster";
+import { Toaster as HotToast} from 'react-hot-toast';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { session, loading, logout } = useAuth();
@@ -57,6 +59,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         )}
       </nav>
       <main>{children}</main>
+      <Toaster />
+      <HotToast/>
     </div>
   );
 };

@@ -103,7 +103,6 @@
 
 // export const useAuth = () => useContext(AuthContext);
 
-
 "use client";
 
 import {
@@ -114,6 +113,8 @@ import {
   ReactNode,
 } from "react";
 import { supabase } from "@/lib/supabaseClient";
+import { useToast } from "@/hooks/use-toast";
+import Toast from "@/components/Toast";
 
 interface AuthContextType {
   user: any | null;
@@ -143,6 +144,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<CustomSession | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const { toast } = useToast();
+
   useEffect(() => {
     const getSession = async () => {
       const { data, error } = await supabase.auth.getSession();
@@ -162,7 +165,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setSession(session ? { user: session.user, expires_at: Date.now() + 3600 } : null);
+        setSession(
+          session ? { user: session.user, expires_at: Date.now() + 3600 } : null
+        );
         setUser(session?.user ?? null);
         setLoading(false);
       }
@@ -210,6 +215,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     ]);
 
     if (error) {
+      if (error.code === "23505")
+        toast({
+          variant: "destructive",
+          title: "Security Code Already Taken.",
+          description: "This security code is already in use. Please choose a different one.",
+        });
       throw new Error(error.message);
     }
   };
